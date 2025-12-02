@@ -1,0 +1,27 @@
+# In your original yaml in ESPHome insert only the following two lines
+#packages:
+# remote_package_shorthand: github://djgenesis/esp32-multisensor-secrets/factory.yaml@main
+#############################################################################################
+# YOU SHOULD HAVE IN YOUR SECRETS FILE THE FOLLOWING THREE LINES OR THE PROCESS WONT WORK
+#############################################################################################
+# wifi_ssid: "nVZCSnZ+KotnKOQQ4S4z5gH8KU4OOPjX"
+# wifi_password: "nVZCSnZ+KotnKOQQ4S4z5gH8KU4OOPjXu24x1L8ZwKI="
+# api_encryption_key_ap_password_ota_password: "KXt/w2cjBPjcEs0s7Dtp+HemiAoWMrB09Pl/duOiFNg="
+#############################################################################################
+# Replace with your own main.yaml file location
+packages:
+  remote_package_shorthand: github://djgenesis/esp32-multisensor-secrets/main.yaml@main
+esphome:
+# This will allow for project identification, configuration and updates.
+# Project section is needed for dashboard_import to work
+  project:
+# Replace with your project name in the form of "yourgitusername.projecttitle1.projecttitle2"
+    name: djgenesis.esp32-multisensor-secrets
+# Replace with whatever version you wish
+    version: "1"
+# Trigger ESPhome to auto discover and "adopt" the main yaml file (public location).
+dashboard_import:
+# Replace with your own main.yaml file location
+  package_import_url: github://djgenesis/esp32-multisensor-secrets/main.yaml@main
+# Import the full main yaml configuartion under your discovered device in ESPHome 
+  import_full_config: true
