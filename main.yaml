@@ -1,0 +1,54 @@
+# CAUTION: CHANGING ANYTHING HERE THAT YOU SHOULDN'T, WILL DISRUPT COMPLETELY THE SENSOR CONNECTION AND/OR FUNCTIONALLITY
+# YOU MAY ONLY GET A NEW UNIQUE "api_encryption_key_ap_password_ota_password" FOR YOUR SECRETS FILE
+# FROM HERE: https://esphome.io/components/api/#configuration-variables
+# AND - FOR ADVANCED USERS ONLY - CHANGE THE LOGS LEVEL AS MENTIONED BELOW
+
+# Refer to remote_package.yaml
+packages:
+  remote_package_shorthand: github://djgenesis/esp32-multisensor-secrets/remote_package.yaml
+esphome:
+  name: esp32-multisensor
+  friendly_name: ESP32 Multisensor
+  name_add_mac_suffix: true
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+# ESPHome API encryption
+api:
+  encryption:
+# Refer it from your secrets file or hard code it
+#    key: {}
+    key: !secret api_encryption_key_ap_password_ota_password
+# ESPHome Over-The-Air ESP32 update ability and password
+ota:
+  - platform: esphome
+# Refer it from your secrets file or hard code it
+#    password: {}
+    password: !secret api_encryption_key_ap_password_ota_password
+# Provision WIFI credebtials through WIFI Access Point
+wifi:
+  id: wifi_component
+# SSID -> Commented out for factory bin file creation. Uncomment upon bin file creation.
+  ssid: !secret wifi_ssid 
+# Password -> Commented out for factory bin file creation. Uncomment upon bin file creation.
+  password: !secret wifi_password
+  ap:
+# Automatically set Access Point password same as your WIFI password after first discovery by ESPHome.
+# Optional but advised to have for security purposes in your main (AP is autoactivated when the sensor is not connected to your WIFI) and
+# you may not want it to be accessed by anyone... even unintentionally!
+# Password -> Commented out for factory bin file creation. Uncomment upon bin file creation.
+    password: !secret wifi_password
+# (WIFI) Access Point portal to provision WIFI credentials
+captive_portal:
+# Provision WIFI credebtials through Bluetooth LE
+esp32_improv:
+  authorizer: none
+# Provision WIFI credebtials through PC USB port
+improv_serial:
+# Logs. Change Logs level to your liking (https://esphome.io/components/logger/#log-levels)
+logger:
+  level: DEBUG
+  logs:
+    sensor: WARN
+    text_sensor: WARN
