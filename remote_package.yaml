@@ -55,7 +55,7 @@ display:
       if (is_present) {
         bool door_open = id(mc38_door_contact).state;
         bool gas_detected = id(mq2_gas_leak).state;
-        bool water_leak = id(water_level).state > 90.0; // Water leak state (Triggered above 10%)
+        bool water_leak = id(water_level).state > 10.0; // Water leak state (Triggered above 10%)
         bool should_flash = id(homeassistant_time).now().second % 2 == 0; 
         // Determine which issues are present and count them
         const char *issue_1 = nullptr;
