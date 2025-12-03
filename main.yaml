@@ -23,21 +23,15 @@ api:
 # ESPHome Over-The-Air ESP32 update ability and password
 ota:
   - platform: esphome
-# Refer it from your secrets file or hard code it
-#    password: {}
+# Password -> Refer it from your secrets file or hard code it
     password: !secret api_encryption_key_ap_password_ota_password
 # Provision WIFI credebtials through WIFI Access Point
 wifi:
   id: wifi_component
-# SSID -> Commented out for factory bin file creation. Uncomment upon bin file creation.
   ssid: !secret wifi_ssid 
-# Password -> Commented out for factory bin file creation. Uncomment upon bin file creation.
   password: !secret wifi_password
   ap:
 # Automatically set Access Point password same as your WIFI password after first discovery by ESPHome.
-# Optional but advised to have for security purposes in your main (AP is autoactivated when the sensor is not connected to your WIFI) and
-# you may not want it to be accessed by anyone... even unintentionally!
-# Password -> Commented out for factory bin file creation. Uncomment upon bin file creation.
     password: !secret wifi_password
 # (WIFI) Access Point portal to provision WIFI credentials
 captive_portal:
