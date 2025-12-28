@@ -53,64 +53,25 @@ display:
     lambda: |-
       bool is_present = id(hlk_ld2402_radar_presence).state;
       if (is_present) {
-        bool door_open = id(mc38_door_contact).state;
         bool gas_detected = id(mq2_gas_leak).state;
-        //bool water_leak = id(water_level).state > 10.0; // Commented when water sensor not connected. Active when water sensor connected.
-        bool water_leak = id(mc38_door_contact).state; // Commented when water sensor connected. Active when water sensor not connected.
         bool should_flash = id(homeassistant_time).now().second % 2 == 0; 
-        // Determine which issues are present and count them
-        const char *issue_1 = nullptr;
-        const char *issue_2 = nullptr;
-        const char *issue_3 = nullptr;
-        int trigger_count = 0;
-        // Assign issues to slots in order of appearance
-        if (water_leak) {
-          trigger_count++;
-          issue_1 = "WATER LEAK";
-        }
+        // --- Warning Screen (Only for Gas) ---
         if (gas_detected) {
-          trigger_count++;
-          if (issue_1 == nullptr) issue_1 = "GAS DETECTED";
-          else issue_2 = "GAS DETECTED";
-        }
-        if (door_open) {
-          trigger_count++;
-          if (issue_1 == nullptr) issue_1 = "DOOR OPEN";
-          else if (issue_2 == nullptr) issue_2 = "DOOR OPEN";
-          else issue_3 = "DOOR OPEN";
-        }
-        // --- Display Logic based on Trigger Count (Flashes if > 0) ---
-        if (trigger_count > 0) {
-          // Only draw text if the flash condition is true.
           if (should_flash) {
-            if (trigger_count == 3) {
-              it.printf(64, 0, id(font_16), TextAlign::TOP_CENTER, "%s", issue_1);
-              it.printf(64, 22, id(font_16), TextAlign::TOP_CENTER, "%s", issue_2);
-              it.printf(64, 44, id(font_16), TextAlign::TOP_CENTER, "%s", issue_3);
-            }
-            else if (trigger_count == 2) {
-              it.printf(64, 0, id(font_16), TextAlign::TOP_CENTER, "! WARNING !");
-              it.printf(64, 22, id(font_16), TextAlign::TOP_CENTER, "%s", issue_1);
-              it.printf(64, 44, id(font_16), TextAlign::TOP_CENTER, "%s", issue_2);
-            }
-            else { // trigger_count == 1
-              it.printf(64, 0, id(font_16), TextAlign::TOP_CENTER, "! WARNING !");
-              it.printf(64, 22, id(font_16), TextAlign::TOP_CENTER, "%s", issue_1);
-              it.printf(64, 44, id(font_16), TextAlign::TOP_CENTER, "! WARNING !"); // Updated to display WARNING
-            }
+            it.printf(64, 0, id(font_16), TextAlign::TOP_CENTER, "! WARNING !");
+            it.printf(64, 22, id(font_16), TextAlign::TOP_CENTER, "GAS DETECTED");
+            it.printf(64, 44, id(font_16), TextAlign::TOP_CENTER, "! WARNING !");
           }
-        }
-        // --- Default Status Screen (If trigger_count is 0) ---
+        } 
+        // --- Default Status Screen (If no Gas detected) ---
         else {
-          // Line 1 (Y=0): Temperature (Left) and Humidity (Right)
+          // Line 1: Temperature and Humidity
           it.printf(0, 0, id(font_16), TextAlign::TOP_LEFT, "%.1fC", id(dht22_temp).state);
           it.printf(128, 0, id(font_16), TextAlign::TOP_RIGHT, "%.0f%%", id(dht22_hum).state);
-          // Line 2 (Y=22): Door Contact (Left) and Gas Leak (Right)
-          const char *door_status = door_open ? "OPEN" : "CLOSED";
-          it.printf(0, 22, id(font_16), TextAlign::TOP_LEFT, "%s", door_status);
-          const char *gas_status = gas_detected ? "DANGER" : "CLEAR";
-          it.printf(128, 22, id(font_16), TextAlign::TOP_RIGHT, "%s", gas_status);
-          // Line 3 (Y=44): WiFi Connection Status (Centered, bottom-aligned)
+          // Line 2: Static Gas Status (Right) and a Placeholder or empty space (Left)
+          // Since door/water are removed, we can center the gas status or keep it right-aligned
+          it.printf(128, 22, id(font_16), TextAlign::TOP_RIGHT, "GAS: CLEAR");
+          // Line 3: WiFi Connection Status
           const char *wifi_status_display = id(wifi_component).is_connected() ? "ONLINE" : "OFFLINE";
           it.printf(64, 44, id(font_16), TextAlign::TOP_CENTER, "%s", wifi_status_display);
         }
